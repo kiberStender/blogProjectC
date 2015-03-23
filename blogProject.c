@@ -9,17 +9,33 @@
 #define MAXREG 10
 
 /*Se estiver no Windows mude para cls*/
-#define clear "clear"
+#define CLEAR "clear"
+
+/*Se estiver no Windows mude para pause*/
+#define PAUSE "read -p \"Pressione enter para sair...\""
 
 int buscaRG(char rgs[MAXREG][20], char rg[20]){
-  int i, posicao = -1;
+  int i;
 
   for(i = 0; i < MAXREG; i++){
     if(strncmp(rgs[i], rg, 20) == 0){
-      posicao = i;
+      return i;
     }
   }
-  return posicao;
+  return -1;
+}
+
+void desenhaMenu1(){
+  /*Para limpar a tela usando uma chamada do próprio sistema operacional
+   *Vem da lib stdlib.h
+   */
+  system(CLEAR);
+
+  printf("\nEscolha uma das opcoes abaixo\n");
+  printf("1- Clientes\n");
+  printf("2- Funcionarios\n");
+  printf("3- Sair do programa\n");
+  printf("Digite aqui: ");
 }
 
 void desenhaMenu2(char modulo[15]){
@@ -27,7 +43,7 @@ void desenhaMenu2(char modulo[15]){
   strcpy(emMaiusculo, modulo);
   emMaiusculo[0] = toupper(emMaiusculo[0]);
 
-  system(clear);
+  system(CLEAR);
   printf("\n%ss\n", emMaiusculo);
   printf("\t1- Cadastrar novo %s\n", modulo);
   printf("\t2- Remover %s\n", modulo);
@@ -55,18 +71,7 @@ int main(){
    */
   int iteratorFun = 0;
 
-   /*Se estiver no Windows mude para pause*/
-  char pause[] = "read -p \"Pressione enter para sair...\"";
-  /*Para limpar a tela usando uma chamada do próprio sistema operacional
-   *Vem da lib stdlib.h
-   */
-  system(clear);
-
-  printf("\nEscolha uma das opcoes abaixo\n");
-  printf("1- Clientes\n");
-  printf("2- Funcionarios\n");
-  printf("3- Sair do programa\n");
-  printf("Digite aqui: ");
+  desenhaMenu1();
   scanf("%i", &opMenu1);
 
   do {
@@ -84,7 +89,7 @@ int main(){
         do {
           switch(opMenuCli){
             case 1:
-              system(clear);
+              system(CLEAR);
 
               if(iteratorCli < MAXREG){
                 printf("Digite o nome do cliente: ");
@@ -110,7 +115,7 @@ int main(){
               }
               break;
             case 2:
-              system(clear);
+              system(CLEAR);
 
               if(iteratorCli > 0){
                 char tempRg[20];
@@ -120,7 +125,7 @@ int main(){
                 /*Guardando numa variavel temporaria*/
                 scanf("%s", tempRg);
 
-                /*Buscar o funcionario a ser apagado*/
+                /*Buscar o cliente a ser apagado*/
                 posicao = buscaRG(rgCli, tempRg);
                 /*Busca terminada*/
 
@@ -160,7 +165,7 @@ int main(){
               }
               break;
             case 3:
-              system(clear);
+              system(CLEAR);
 
               if(iteratorCli > 0){
                 char tempRg[20];
@@ -221,7 +226,7 @@ int main(){
               }
               break;
             case 4:
-              system(clear);
+              system(CLEAR);
 
               if(iteratorCli > 0){
                 char tempRg[20];
@@ -242,7 +247,7 @@ int main(){
                   printf("CPF: %s \n", cpf[posicao]);/*CPF*/
                   /*Data de nascimento*/
                   printf("Data de nascimento: %s \n", datanascCli[posicao]);
-                  system(pause);
+                  system(PAUSE);
                 } else {
                   printf(msg2);
                 }
@@ -262,7 +267,7 @@ int main(){
                   /*Data de nascimento*/
                   printf("Data de nascimento: %s \n\n\n", datanascCli[j]);
                 }
-                system(pause);
+                system(PAUSE);
               } else {
                 printf("Nenhum registro");
               }
@@ -283,7 +288,7 @@ int main(){
         do {
           switch(opMenuFun){
             case 1:
-              system(clear);
+              system(CLEAR);
               if(iteratorFun < MAXREG){
                 printf("Digite o nome do funcionario: ");
                 scanf("%s", nomeFun[iteratorFun]); /*Pegando o nome do sujeito*/
@@ -355,7 +360,7 @@ int main(){
               }
               break;
             case 3:
-              system(clear);
+              system(CLEAR);
 
               if(iteratorFun > 0){
                 char tempRg[20];
@@ -416,7 +421,7 @@ int main(){
               }
               break;
             case 4:
-              system(clear);
+              system(CLEAR);
 
               if(iteratorFun > 0){
                 char tempRg[20];
@@ -437,7 +442,7 @@ int main(){
                   printf("CPF: %s \n", cartTrab[posicao]);/*CPF*/
                   /*Data de nascimento*/
                   printf("Data de nascimento: %s \n", datanascFun[posicao]);
-                  system(pause);
+                  system(PAUSE);
                 } else {
                   printf(msg2);
                 }
@@ -456,16 +461,11 @@ int main(){
     }
 
     opMenu1 = 0; /*Para prevenir que volte a menu que estava*/
-    system(clear);
 
-    printf("\nEscolha uma das opcoes abaixo\n");
-    printf("1- Clientes\n");
-    printf("2- Funcionarios\n");
-    printf("3- Sair do programa\n");
-    printf("Digite aqui: ");
+    desenhaMenu1();
     scanf("%i", &opMenu1);
   } while(opMenu1 != 3);
 
-  system(clear);
+  system(CLEAR);
   return 0;
 }
