@@ -6,6 +6,17 @@
 /*Máximo de registros que nosso programa irá guardar*/
 #define MAXREG 10
 
+int buscaRG(char rgs[MAXREG][20], char rg[20]){
+  int i, posicao = -1;
+
+  for(i = 0; i < MAXREG; i++){
+    if(strncmp(rgs[i], rg, 20) == 0){
+      posicao = i;
+    }
+  }
+  return posicao;
+}
+
 int main(){
   int opMenu1;
   /*Variaveis de cliente*/
@@ -91,18 +102,14 @@ int main(){
 
               if(iteratorCli > 0){
                 char tempRg[20];
-                int i, posicao = -1;
+                int posicao;
 
                 printf("Digite o RG do cliente: ");
                 /*Guardando numa variavel temporaria*/
                 scanf("%s", tempRg);
 
                 /*Buscar o funcionario a ser apagado*/
-                for(i = 0; i < MAXREG; i++){
-                  if(strncmp(rgCli[i], tempRg, 20) == 0){
-                    posicao = i;
-                  }
-                }
+                posicao = buscaRG(rgCli, tempRg);
                 /*Busca terminada*/
 
                 if(posicao > -1){
@@ -145,18 +152,14 @@ int main(){
 
               if(iteratorCli > 0){
                 char tempRg[20];
-                int i, posicao = -1;
+                int posicao;
 
                 printf("Digite o RG do cliente: ");
                 /*Guardando numa variavel temporaria*/
                 scanf("%s", tempRg);
 
                 /*Buscar o funcionario a ser apagado*/
-                for(i = 0; i < MAXREG; i++){
-                  if(strncmp(rgCli[i], tempRg, 20) == 0){
-                    posicao = i;
-                  }
-                }
+                posicao = buscaRG(rgCli, tempRg);
                 /*Busca terminada*/
 
                 if(posicao > -1){
@@ -210,18 +213,14 @@ int main(){
 
               if(iteratorCli > 0){
                 char tempRg[20];
-                int i, posicao = -1;
+                int posicao;
 
                 printf("Digite o RG do cliente: ");
                 /*Guardando numa variavel temporaria*/
                 scanf("%s", tempRg);
 
                 /*Buscar o funcionario a ser apagado*/
-                for(i = 0; i < MAXREG; i++){
-                  if(strncmp(rgCli[i], tempRg, 20) == 0){
-                    posicao = i;
-                  }
-                }
+                posicao = buscaRG(rgCli, tempRg);
                 /*Busca terminada*/
 
                 if(posicao > -1){
@@ -313,18 +312,14 @@ int main(){
             case 2:
               if(iteratorFun > 0){
                 char tempRg[20];
-                int i, posicao = -1;
+                int posicao;
 
                 printf("Digite o RG do funcionario: ");
                 /*Guardando numa variavel temporaria*/
                 scanf("%s", tempRg);
 
                 /*Buscar o funcionario a ser apagado*/
-                for(i = 0; i < MAXREG; i++){
-                  if(strncmp(rgCli[i], tempRg, 20) == 0){
-                    posicao = i;
-                  }
-                }
+                posicao = buscaRG(rgFun, tempRg);
                 /*Busca terminada*/
 
                 if(posicao > -1){
@@ -366,18 +361,14 @@ int main(){
 
               if(iteratorFun > 0){
                 char tempRg[20];
-                int i, posicao = -1;
+                int posicao;
 
                 printf("Digite o RG do cliente: ");
                 /*Guardando numa variavel temporaria*/
                 scanf("%s", tempRg);
 
                 /*Buscar o funcionario a ser apagado*/
-                for(i = 0; i < MAXREG; i++){
-                  if(strncmp(rgFun[i], tempRg, 20) == 0){
-                    posicao = i;
-                  }
-                }
+                posicao = buscaRG(rgFun, tempRg);
                 /*Busca terminada*/
 
                 if(posicao > -1){
@@ -431,18 +422,14 @@ int main(){
 
               if(iteratorFun > 0){
                 char tempRg[20];
-                int i, posicao = -1;
+                int posicao;
 
                 printf("Digite o RG do funcionario: ");
                 /*Guardando numa variavel temporaria*/
                 scanf("%s", tempRg);
 
                 /*Buscar o funcionario a ser apagado*/
-                for(i = 0; i < MAXREG; i++){
-                  if(strncmp(rgFun[i], tempRg, 20) == 0){
-                    posicao = i;
-                  }
-                }
+                posicao = buscaRG(rgFun, tempRg);
                 /*Busca terminada*/
 
                 if(posicao > -1){
