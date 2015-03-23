@@ -2,9 +2,14 @@
 #include <string.h>
 #include <stdlib.h>
 /*Lib nova para adicionar algumas funcionalidades legais*/
+#include <ctype.h>
+/*Lib para o toupper*/
 
 /*Máximo de registros que nosso programa irá guardar*/
 #define MAXREG 10
+
+/*Se estiver no Windows mude para cls*/
+#define clear "clear"
 
 int buscaRG(char rgs[MAXREG][20], char rg[20]){
   int i, posicao = -1;
@@ -15,6 +20,21 @@ int buscaRG(char rgs[MAXREG][20], char rg[20]){
     }
   }
   return posicao;
+}
+
+void desenhaMenu2(char modulo[15]){
+  char emMaiusculo[15];
+  strcpy(emMaiusculo, modulo);
+  emMaiusculo[0] = toupper(emMaiusculo[0]);
+
+  system(clear);
+  printf("\n%ss\n", emMaiusculo);
+  printf("\t1- Cadastrar novo %s\n", modulo);
+  printf("\t2- Remover %s\n", modulo);
+  printf("\t3- Atualizar dados de %s\n", modulo);
+  printf("\t4- Ver dados de %s\n", modulo);
+  printf("\t5- Sair de %ss\n", emMaiusculo);
+  printf("Digite aqui: ");
 }
 
 int main(){
@@ -35,7 +55,6 @@ int main(){
    */
   int iteratorFun = 0;
 
-  char clear[] = "clear"; /*Se estiver no Windows mude para cls*/
    /*Se estiver no Windows mude para pause*/
   char pause[] = "read -p \"Pressione enter para sair...\"";
   /*Para limpar a tela usando uma chamada do próprio sistema operacional
@@ -59,14 +78,7 @@ int main(){
 
     switch(opMenu1){
       case 1:
-        system(clear);
-        printf("\nClientes\n");
-        printf("\t1- Cadastrar novo cliente\n");
-        printf("\t2- Remover cliente\n");
-        printf("\t3- Atualizar dados de cliente\n");
-        printf("\t4- Ver dados de cliente\n");
-        printf("\t5- Sair de Clientes\n");
-        printf("Digite aqui: ");
+        desenhaMenu2("cliente");
         scanf("%i", &opMenuCli);
 
         do {
@@ -258,28 +270,14 @@ int main(){
           }
 
           opMenuCli = 0; /*Impedir que volte ao menu que ja estava*/
-          system(clear);
-          printf("\nClientes\n");
-          printf("\t1- Cadastrar novo cliente\n");
-          printf("\t2- Remover cliente\n");
-          printf("\t3- Atualizar dados de cliente\n");
-          printf("\t4- Ver dados de cliente\n");
-          printf("\t5- Sair de Clientes\n");
-          printf("Digite aqui: ");
 
+          desenhaMenu2("cliente");
           scanf("%i", &opMenuCli);
 
         } while(opMenuCli != 5);
         break;
       case 2:
-        system(clear);
-        printf("\nFuncionarios\n");
-        printf("\t1- Cadastrar novo funcionario\n");
-        printf("\t2- Remover funcionario\n");
-        printf("\t3- Atualizar dados de funcionario\n");
-        printf("\t4- Ver dados de funcionario\n");
-        printf("\t5- Sair de Funcionarios\n");
-        printf("Digite aqui: ");
+        desenhaMenu2("funcionario");
         scanf("%i", &opMenuFun);
 
         do {
@@ -450,14 +448,7 @@ int main(){
           }
 
           opMenuFun = 0; /*Prevenir que volte ao menu que ja estava*/
-          system(clear);
-          printf("\nFuncionarios\n");
-          printf("\t1- Cadastrar novo funcionario\n");
-          printf("\t2- Remover funcionario\n");
-          printf("\t3- Atualizar dados de funcionario\n");
-          printf("\t4- Ver dados de funcionario\n");
-          printf("\t5- Sair de Funcionarios\n");
-          printf("Digite aqui: ");
+          desenhaMenu2("funcionario");
           scanf("%i", &opMenuFun);
 
         } while(opMenuFun != 5);
