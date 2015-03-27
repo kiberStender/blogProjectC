@@ -2,13 +2,13 @@
 #include "./header/clientefn.h"
 #include "./header/funcionariofn.h"
 
-enum acoes {DELETAR = 1, EDITAR, VER};
+typedef enum acao {DELETAR = 1, EDITAR, VER} Acao;
 
-enum modulos{CLIENTE = 1, FUNCIONARIO};
+typedef enum modulo{CLIENTE = 1, FUNCIONARIO} Modulo;
 
-void realizaAcaoSwitch(int, int, int);
-void realizaAcao(int, int, int);
-void switchOptions(int, int);
+void realizaAcaoSwitch(Modulo, Acao, int);
+void realizaAcao(int, Modulo, Acao);
+void switchOptions(int, Modulo);
 
 int main(int argc, char **argv){
   int opMenu1;
@@ -37,24 +37,24 @@ int main(int argc, char **argv){
   return 0;
 }
 
-void realizaAcaoSwitch(int modulo, int acao, int posicao){
+void realizaAcaoSwitch(Modulo mod, Acao acao, int posicao){
   switch(acao){
     case DELETAR:
-      if(modulo == CLIENTE){
+      if(mod == CLIENTE){
         deleteCliente(posicao);
       } else {
         deleteFuncionario(posicao);
       }
       break;
     case EDITAR:
-      if(modulo == CLIENTE){
+      if(mod == CLIENTE){
         atualizaCliente(posicao);
       } else {
         atualizaFuncionario(posicao);
       }
       break;
     case VER:
-      if(modulo == CLIENTE){
+      if(mod == CLIENTE){
         verCliente(posicao);
       } else {
         verFuncionario(posicao);
@@ -63,7 +63,7 @@ void realizaAcaoSwitch(int modulo, int acao, int posicao){
   }
 }
 
-void realizaAcao(int iterator, int modulo, int acao){
+void realizaAcao(int iterator, Modulo mod, Acao acao){
   system(CLEAR);
   
   if(iterator > 0){
@@ -73,19 +73,17 @@ void realizaAcao(int iterator, int modulo, int acao){
     /*Guardando numa variavel temporaria*/
     scanf("%s", tempRg);
     
-    if(modulo == FUNCIONARIO){      
-      realizaAcaoSwitch(modulo, acao, buscaRG(rgFun, tempRg));
-    } else if(modulo == CLIENTE){
-      realizaAcaoSwitch(modulo, acao, buscaRG(rgCli, tempRg));
+    if(mod == FUNCIONARIO){      
+      realizaAcaoSwitch(mod, acao, buscaFuncionario(funcionarios, tempRg));
     } else {
-      printf("Por favor escolha um dos modulos: Funcionario ou Cliente");
+      realizaAcaoSwitch(mod, acao, buscaCliente(clientes, tempRg));
     }    
   } else {
-    printf(msg1);
+    printf(MSG1);
   }
 }
 
-void switchOptions(int iterator, int modulo){
+void switchOptions(int iterator, Modulo modulo){
   int opMenu;
   char mod[15];
   
