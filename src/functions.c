@@ -6,17 +6,6 @@
 /*Lib para o toupper*/
 #include "../header/functions.h"
 
-int buscaRG(char rgs[MAXREG][20], char rg[20]){
-  int i;
-
-  for(i = 0; i < MAXREG; i++){
-    if(strncmp(rgs[i], rg, 20) == 0){
-      return i;
-    }
-  }
-  return -1;
-}
-
 void desenhaMenu1(){
   /*Para limpar a tela usando uma chamada do próprio sistema operacional
    *Vem da lib stdlib.h

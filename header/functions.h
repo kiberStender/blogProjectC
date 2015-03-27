@@ -17,12 +17,11 @@
 /*
  * Mensagens do sistema
  */
-#define msg  "Máximo de registros permitidos já cheio!!!"
-#define msg1 "Não existem registros!!!"
-#define msg2 "O registro que buscas nao existe."
-#define msg3 "Removido com sucesso!!!"
+#define MSG  "Máximo de registros permitidos já cheio!!!"
+#define MSG1 "Não existem registros!!!"
+#define MSG2 "O registro que buscas nao existe."
+#define MSG3 "Removido com sucesso!!!"
 
 /*funcoes que independem de modulo*/
-int buscaRG(char[MAXREG][20], char[20]);
 void desenhaMenu1();
 void desenhaMenu2(char[15]);
