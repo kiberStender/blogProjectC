@@ -1,11 +1,10 @@
 all: program 
 clean:
-	rm -f program
-	rm -f $(LIB)/*.a
-	rm -f $(OBJ)/*.o
+	rm -rf program
+	rm -rf $(LIB)/*.a
+	rm -rf $(OBJ)/*.o
 .PHONY: all clean
 
-# -c ins implicit
 CC=gcc
 SRC=./src
 HEADER=./header
@@ -21,7 +20,3 @@ cadastro.a:
 	$(CC) -c $(CFLAGS) $(SRC)/*.c
 	mv *.o $(OBJ)
 	ar -cru $(LIB)/libcadastro.a $(OBJ)/*.o
-
-#functions.o: functions.c
-#clientefn.o: clientefn.c functions.h
-#funcionariofn.o: funcionariofn.c functions.h
