@@ -1,4 +1,6 @@
 #include "../header/funcionariofn.h"
+#include "../header/funcionario.h"
+#include "../header/functions.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -9,30 +11,43 @@
 int iteratorFun = 0;
 
 /*Acoes com funcionario*/
+int buscaFuncionario(Funcionario funs[MAXREG], char rg[20]){
+  int i;
+
+  for(i = 0; i < MAXREG; i++){
+    if(strncmp(funs[i].rg, rg, 20) == 0){
+      return i;
+    }
+  }
+  return -1;
+}
+
 void cadastraFuncionario(){
   system(CLEAR);
   
   if(iteratorFun < MAXREG){
+    char nome[20], sobrenome[20], rg[20], cartTrab[20], dataNasc[15];       
+    
     printf("Digite o nome do funcionario: ");
-    scanf("%s", nomeFun[iteratorFun]); /*Pegando o nome do sujeito*/
+    scanf("%s", nome); /*Pegando o nome do sujeito*/
     
     printf("Digite o sobrenome do funcionario: ");
-    scanf("%s", sobrenomeFun[iteratorFun]); /*Pegando o sobrenome do sujeito*/
+    scanf("%s", sobrenome); /*Pegando o sobrenome do sujeito*/
     
     printf("Digite o RG do funcionario: ");
-    scanf("%s", rgFun[iteratorFun]); /*Pegando o rg do sujeito*/
+    scanf("%s", rg); /*Pegando o rg do sujeito*/
     
     printf("Digite o numero da carteira de trabalho do funcionario: ");
-    scanf("%s", cartTrab[iteratorFun]); /*Pegando o cpf do sujeito*/
+    scanf("%s", cartTrab); /*Pegando o cpf do sujeito*/
     
     printf("Digite a data de nascimento do funcionario: ");
-    scanf("%s", datanascFun[iteratorFun]); /*Pegando o datanasc do sujeito*/
+    scanf("%s", dataNasc); /*Pegando o datanasc do sujeito*/
     
-    iteratorFun = iteratorFun + 1;
+    funcionarios[iteratorFun] = FuncionarioConstrutor(nome, sobrenome, rg, cartTrab, dataNasc);
     
-    /*iteratorFun++ se preferir*/
+    iteratorFun++;
   } else {
-    printf(msg);
+    printf(MSG);
   }
 }
 
@@ -45,36 +60,25 @@ void deleteFuncionario(int posicao){
    * espacos vazios para o fim do array
    */
   for(j = posicao; j < MAXREG; j++){
-    strcpy(nomeFun[j], nomeFun[j + 1]);
-    strcpy(nomeFun[j + 1], "!");
-        
-    strcpy(sobrenomeFun[j], sobrenomeFun[j + 1]);
-    strcpy(sobrenomeFun[j + 1], "!");
-        
-    strcpy(rgFun[j], rgFun[j + 1]);
-    strcpy(rgFun[j + 1], "!");
-        
-    strcpy(cartTrab[j], cartTrab[j + 1]);
-    strcpy(cartTrab[j + 1], "!");
-        
-    strcpy(datanascFun[j], datanascFun[j + 1]);
-    strcpy(datanascFun[j + 1], "!");
+  
+    funcionarios[j] = funcionarios[j + 1];
+    
+    //funcionarios[j + 1] = NULL;
   }
    
-  iteratorFun = iteratorFun - 1;
-  /*iteratorFun--; se preferir*/
+  iteratorFun--;
 }
 
 void atualizaFuncionario(int posicao){
-  char nome[20], sNome[20], rg[20], cartTrab_[20], dtNasc[15];
+  char nome[20], sNome[20], rg[20], cartTrab[20], dtNasc[15];
       
   printf("Dados originais \n\n");
-  printf("Nome: %s \n", nomeFun[posicao]);/*Nome*/
-  printf("Sobrenome: %s \n", sobrenomeFun[posicao]);/*Sobrenome*/
-  printf("RG: %s \n", rgFun[posicao]);/*RG*/
-  printf("Carteira de trabalho: %s \n", cartTrab[posicao]);/*CartTrab*/
+  printf("Nome: %s \n", funcionarios[posicao].nome);/*Nome*/
+  printf("Sobrenome: %s \n", funcionarios[posicao].sobrenome);/*Sobrenome*/
+  printf("RG: %s \n", funcionarios[posicao].rg);/*RG*/
+  printf("Carteira de trabalho: %s \n", funcionarios[posicao].cartTrab);/*CartTrab*/
   /*Data de nascimento*/
-  printf("Data de nascimento: %s \n", datanascFun[posicao]);
+  printf("Data de nascimento: %s \n", funcionarios[posicao].dataNasc);
   printf("\n\nPara manter o mesmo valor digite _ \n\n");
       
   printf("Digite um novo valor para o nome: ");
@@ -84,33 +88,33 @@ void atualizaFuncionario(int posicao){
   printf("Digite um novo valor para o rg: ");
   scanf("%s", rg);
   printf("Digite um novo valor para a carteira de trabalho: ");
-  scanf("%s", cartTrab_);
+  scanf("%s", cartTrab);
   printf("Digite um novo valor para o data de nascimento: ");
   scanf("%s", dtNasc);
       
   if(strncmp(nome, "_", 1) != 0){
-    strcpy(nomeFun[posicao], nome);
+    strcpy(funcionarios[posicao].nome, nome);
   }
   if(strncmp(sNome, "_", 1) != 0){
-    strcpy(sobrenomeFun[posicao], sNome);
+    strcpy(funcionarios[posicao].sobrenome, sNome);
   }
   if(strncmp(rg, "_", 1) != 0){
-    strcpy(rgFun[posicao], rg);
+    strcpy(funcionarios[posicao].rg, rg);
   }
-  if(strncmp(cartTrab_, "_", 1) != 0){
-    strcpy(cartTrab[posicao], cartTrab_);
+  if(strncmp(cartTrab, "_", 1) != 0){
+    strcpy(funcionarios[posicao].cartTrab, cartTrab);
   }
   if(strncmp(dtNasc, "_", 1) != 0){
-    strcpy(datanascFun[posicao], dtNasc);
+    strcpy(funcionarios[posicao].dataNasc, dtNasc);
   }
 }
 
 void verFuncionario(int posicao){
-  printf("Nome: %s \n", nomeFun[posicao]);/*Nome*/
-  printf("Sobrenome: %s \n", sobrenomeFun[posicao]);/*Sobrenome*/
-  printf("RG: %s \n", rgFun[posicao]);/*RG*/
-  printf("CPF: %s \n", cartTrab[posicao]);/*CPF*/
+  printf("Nome: %s \n", funcionarios[posicao].nome);/*Nome*/
+  printf("Sobrenome: %s \n", funcionarios[posicao].sobrenome);/*Sobrenome*/
+  printf("RG: %s \n", funcionarios[posicao].rg);/*RG*/
+  printf("CPF: %s \n", funcionarios[posicao].cartTrab);/*CPF*/
   /*Data de nascimento*/
-  printf("Data de nascimento: %s \n", datanascFun[posicao]);
+  printf("Data de nascimento: %s \n", funcionarios[posicao].dataNasc);
   system(PAUSE);
 }
