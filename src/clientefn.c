@@ -1,4 +1,5 @@
 #include "../header/clientefn.h"
+#include "../header/cliente.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -9,33 +10,65 @@
 int iteratorCli = 0;
 
 /*Acoes com cliente*/
+int buscaCliente(Cliente clis[MAXREG], char rg[20]){
+  int i;
+
+  for(i = 0; i < MAXREG; i++){
+    if(strncmp(clis[i].rg, rg, 20) == 0){
+      return i;
+    }
+  }
+  return -1;
+}
+
+int existeCliente(Cliente clis[MAXREG], Cliente c){
+  int i;
+
+  for(i = 0; i < MAXREG; i++){
+    if(equalsCliente(clis[i], c)){
+      return i;
+    }
+  }
+  return -1;
+}
+
 void cadastraCliente(){
   system(CLEAR);
   
   if(iteratorCli < MAXREG){
+    char nome[20], sobrenome[20], rg[20], cpf[20], dataNasc[15];
   
     printf("Digite o nome do cliente: ");
-    scanf("%s", nomeCli[iteratorCli]); /*Pegando o nome do sujeito*/
+    scanf("%s", nome); /*Pegando o nome do sujeito*/
   
     printf("Digite o sobrenome do cliente: ");
-    scanf("%s", sobrenomeCli[iteratorCli]); /*Pegando o sobrenome do sujeito*/
+    scanf("%s", sobrenome); /*Pegando o sobrenome do sujeito*/
   
     printf("Digite o RG do cliente: ");
-    scanf("%s", rgCli[iteratorCli]); /*Pegando o rg do sujeito*/
+    scanf("%s", rg); /*Pegando o rg do sujeito*/
   
     printf("Digite o CPF do cliente: ");
-    scanf("%s", cpf[iteratorCli]); /*Pegando o cpf do sujeito*/
+    scanf("%s", cpf); /*Pegando o cpf do sujeito*/
   
     printf("Digite a data de nascimento do cliente: ");
-    scanf("%s", datanascCli[iteratorCli]); /*Pegando o datanasc do sujeito*/
+    scanf("%s", dataNasc); /*Pegando o datanasc do sujeito*/
+    
+    Cliente c = ClienteConstrutor(nome, sobrenome, rg, cpf, dataNasc);
+    
+    if(existeCliente(clientes, c) > -1){
+      printf("Cliente já existente");
+    } else {
+      clientes[iteratorCli] = c;
 
-    iteratorCli = iteratorCli + 1;
-    /*iteratorCli++; se preferir*/
+      iteratorCli = iteratorCli + 1;
+      /*iteratorCli++; se preferir*/
+    }
 
   } else {
-    printf(msg);
+    printf(MSG);
   }
 }
+
 void deleteCliente(int posicao){
   int j;
       
@@ -45,37 +78,26 @@ void deleteCliente(int posicao){
    * espacos vazios para o fim do array
    */
   for(j = posicao; j < MAXREG; j++){
-    strcpy(nomeCli[j], nomeCli[j + 1]);
-    strcpy(nomeCli[j + 1], "!");
-        
-    strcpy(sobrenomeCli[j], sobrenomeCli[j + 1]);
-    strcpy(sobrenomeCli[j + 1], "!");
-        
-    strcpy(rgCli[j], rgCli[j + 1]);
-    strcpy(rgCli[j + 1], "!");
-        
-    strcpy(cpf[j], cpf[j + 1]);
-    strcpy(cpf[j + 1], "!");
-        
-    strcpy(datanascCli[j], datanascCli[j + 1]);
-    strcpy(datanascCli[j + 1], "!");
+    
+    clientes[j] = clientes[j + 1];
+    //clientes[j + 1] = NULL;
   }
       
-  printf(msg3);
+  printf(MSG3);
   iteratorCli = iteratorCli - 1;
   /*iteratorCli--; se preferir*/
 }
 
 void atualizaCliente(int posicao){
-  char nome[20], sNome[20], rg[20], cpf_[20], dtNasc[15];
+  char nome[20], sNome[20], rg[20], cpf[20], dtNasc[15];
   
   printf("Dados originais \n\n");
-  printf("Nome: %s \n", nomeCli[posicao]);/*Nome*/
-  printf("Sobrenome: %s \n", sobrenomeCli[posicao]);/*Sobrenome*/
-  printf("RG: %s \n", rgCli[posicao]);/*RG*/
-  printf("CPF: %s \n", cpf[posicao]);/*CPF*/
+  printf("Nome: %s \n", clientes[posicao].nome);/*Nome*/
+  printf("Sobrenome: %s \n", clientes[posicao].sobrenome);/*Sobrenome*/
+  printf("RG: %s \n", clientes[posicao].rg);/*RG*/
+  printf("CPF: %s \n", clientes[posicao].cpf);/*CPF*/
   /*Data de nascimento*/
-  printf("Data de nascimento: %s \n", datanascCli[posicao]);
+  printf("Data de nascimento: %s \n", clientes[posicao].dataNasc);
       
   printf("\n\nPara manter o mesmo valor digite _ \n\n");
       
@@ -86,33 +108,33 @@ void atualizaCliente(int posicao){
   printf("Digite um novo valor para o rg: ");
   scanf("%s", rg);
   printf("Digite um novo valor para o cpf: ");
-  scanf("%s", cpf_);
+  scanf("%s", cpf);
   printf("Digite um novo valor para o data de nascimento: ");
   scanf("%s", dtNasc);
 
   if(strncmp(nome, "_", 1) != 0){
-    strcpy(nomeCli[posicao], nome);
+    strcpy(clientes[posicao].nome, nome);
   }
   if(strncmp(sNome, "_", 1) != 0){
-    strcpy(sobrenomeCli[posicao], sNome);
+    strcpy(clientes[posicao].sobrenome, sNome);
   }
   if(strncmp(rg, "_", 1) != 0){
-    strcpy(rgCli[posicao], rg);
+    strcpy(clientes[posicao].rg, rg);
   }
-  if(strncmp(cpf_, "_", 1) != 0){
-    strcpy(cpf[posicao], cpf_);
+  if(strncmp(cpf, "_", 1) != 0){
+    strcpy(clientes[posicao].cpf, cpf);
   }
   if(strncmp(dtNasc, "_", 1) != 0){
-    strcpy(datanascCli[posicao], dtNasc);
+    strcpy(clientes[posicao].dataNasc, dtNasc);
   }
 }
 
 void verCliente(int posicao){
-  printf("Nome: %s \n", nomeCli[posicao]);/*Nome*/
-  printf("Sobrenome: %s \n", sobrenomeCli[posicao]);/*Sobrenome*/
-  printf("RG: %s \n", rgCli[posicao]);/*RG*/
-  printf("CPF: %s \n", cpf[posicao]);/*CPF*/
+  printf("Nome: %s \n", clientes[posicao].nome);/*Nome*/
+  printf("Sobrenome: %s \n", clientes[posicao].sobrenome);/*Sobrenome*/
+  printf("RG: %s \n", clientes[posicao].rg);/*RG*/
+  printf("CPF: %s \n", clientes[posicao].cpf);/*CPF*/
   /*Data de nascimento*/
-  printf("Data de nascimento: %s \n", datanascCli[posicao]);
+  printf("Data de nascimento: %s \n", clientes[posicao].dataNasc);
   system(PAUSE);
 }
