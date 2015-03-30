@@ -1,14 +1,36 @@
 #ifndef FUNCIONARIO_H
 #define FUNCIONARIO_H
 
+#include "data.h"
+#include "endereco.h"
+
 typedef struct Funcionario {
-  char nome[20];
-  char sobrenome[20];
-  char rg[20];
-  char cartTrab[20];
-  char dataNasc[15];
+  char *nome;
+  char *sobrenome;
+  char *rg;
+  char *cartTrab;
+  Data dataNasc;
+  Endereco end;
 } Funcionario;
 
-Funcionario FuncionarioConstrutor(char[20], char[20], char[20], char[20], char[15]);
+Funcionario* construtorFuncionario(char[], char[], char[], char[], Data, Endereco);
+
+int equalsFuncionario(Funcionario, Funcionario);
+
+void setFuncionarioNome(Funcionario*, char*);
+
+void setFuncionarioSobrenome(Funcionario*, char*);
+
+void setFuncionarioRG(Funcionario*, char*);
+
+void setFuncionarioCartTrab(Funcionario*, char*);
+
+void setFuncionarioDataNasc(Funcionario*, Data);
+
+void setFuncionarioEnd(Funcionario*, Endereco);
+
+void printFuncionario(Funcionario);
+
+void freeFuncionario(Funcionario*);
 
 #endif
