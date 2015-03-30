@@ -8,6 +8,7 @@
 ControladorFuncionario construtorControladorFuncionario(){
   ControladorFuncionario cc;
   cc.lista = NULL;
+  cc.arquivo = NULL;
   
   return cc;
 }

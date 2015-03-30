@@ -16,10 +16,43 @@ void freeControladorCliente(ControladorCliente* cc){
   freeDbCliente(&cc->lista);
 }
 
+void carregaArquivoCC(ControladorCliente* cc){
+  cc->arquivo = fopen("bancoCliente.bin", "rb");
+  
+  if(cc->arquivo != NULL) {
+  
+    while(!feof(cc->arquivo)){
+      Cliente c;
+
+      fread(&c, sizeof(Cliente), 1, cc->arquivo);
+
+      adicionarCliente(&cc->lista, &c);
+    }
+
+    fclose(cc->arquivo);
+  }
+}
+
+void gravaArquivoCC(ControladorCliente* cc){
+  cc->arquivo = fopen("bancoCliente.bin", "wb");
+  DbCliente* atual = cc->lista;
+  
+  while(atual != NULL) {
+    Cliente* c = atual->cliente;
+    
+    fwrite(c, sizeof(c), 1, cc->arquivo);
+    
+    atual = atual->prox;
+  }
+  
+  fclose(cc->arquivo);
+  
+}
+
 void cadastraCliente(ControladorCliente* cc){
   system(CLEAR);
   
-  char nome[20], sobrenome[20], rg[13], cpf[15], dataNasc[12], cep[15], 
+  /*char nome[20], sobrenome[20], rg[13], cpf[15], dataNasc[12], cep[15], 
     num[15], rua[25], bairro[25], cid[25], est[25], pais[25];
   
   printf("Digite o nome do cliente: ");
@@ -61,12 +94,12 @@ void cadastraCliente(ControladorCliente* cc){
   Data* dt = construtorData(dataNasc);
   Endereco* end = construtorEndereco(cep, num, rua, bairro, cid, est, pais);
     
-  Cliente *c = construtorCliente(nome, sobrenome, rg, cpf, dt, end);
+  Cliente *c = construtorCliente(nome, sobrenome, rg, cpf, dt, end);*/
   
-  /*Data* dt = construtorData("20/09/1989");
+  Data* dt = construtorData("20/09/1989");
   Endereco* end = construtorEndereco("3698", "32", "bloa", "bair", "ga", "pes", "br");
     
-  Cliente *c = construtorCliente("Kleber", "stender", "366", "989", dt, end);*/
+  Cliente *c = construtorCliente("Kleber", "stender", "366", "989", dt, end);
     
   if(existeCliente(cc->lista, c)){
     printf("Cliente já existente!!!");

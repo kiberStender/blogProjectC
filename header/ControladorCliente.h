@@ -20,10 +20,16 @@ extern "C" {
     
     typedef struct ControladorCliente {
         DbCliente* lista;
+        FILE* arquivo;
     } ControladorCliente;
     
     ControladorCliente construtorControladorCliente();
     void freeControladorCliente(ControladorCliente*);
+    
+    //Operações com arquivps
+    
+    void carregaArquivoCC(ControladorCliente*);
+    void gravaArquivoCC(ControladorCliente*);
     
     void cadastraCliente(ControladorCliente*);
     void deleteCliente(ControladorCliente*, Cliente*);

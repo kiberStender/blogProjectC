@@ -51,6 +51,7 @@ void switchOptions(ControladorCliente* cCli, ControladorFuncionario* cFun, Modul
   
   if(m == CLIENTE){
     strcpy(mod, "cliente");
+    carregaArquivoCC(cCli);
   } else {
     strcpy(mod, "funcionario");
   }
@@ -83,7 +84,16 @@ void switchOptions(ControladorCliente* cCli, ControladorFuncionario* cFun, Modul
       scanf("%i", &opMenu);
     }
     
-  } while(opMenu != 5); 
+  } while(opMenu != 5);
+  
+  if(m == CLIENTE){
+    if(tamanhoDbCliente(cCli->lista) > 0){
+      gravaArquivoCC(cCli);
+    }
+  } else {
+    
+  }
+  
 }
 
 void realizaAcao(ControladorCliente* cCli, ControladorFuncionario* cFun, Modulo m, Acao a){

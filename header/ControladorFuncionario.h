@@ -16,6 +16,7 @@ extern "C" {
     
     typedef struct ControladorFuncionario {
         DbFuncionario* lista;
+        FILE* arquivo;
     } ControladorFuncionario;
     
     ControladorFuncionario construtorControladorFuncionario();
