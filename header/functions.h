@@ -19,9 +19,6 @@ extern "C" {
 #include <ctype.h>
 /*Lib para o toupper*/
 
-/*Máximo de registros que nosso programa irá guardar*/
-#define MAXREG 10
-
 /*Se estiver no Windows mude para cls*/
 #define CLEAR "clear"
 
