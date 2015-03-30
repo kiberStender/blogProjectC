@@ -1,7 +1,9 @@
-obj/ #precisamos da barra para indicar que é pasta e não arquivo
+#precisamos da barra para indicar que é pasta e não arquivo
+obj/
 lib/
 
 *.dat #Para ignorar nossos arquivos banco de dados
 
 *.exe #Qualquer arquivo .exe
-program # para ignorar o executáel no Linux
+#para ignorar o executáel no Linux
+program
