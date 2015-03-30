@@ -1,6 +1,17 @@
-#ifndef FUNCTIONS_H
-#define FUNCTIONS_H
+/* 
+ * File:   functions.h
+ * Author: sirkleber
+ *
+ * Created on March 6, 2015, 2:18 PM
+ */
 
+#ifndef FUNCTIONS_H
+#define	FUNCTIONS_H
+
+#ifdef	__cplusplus
+extern "C" {
+#endif
+    
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -26,7 +37,12 @@
 #define MSG3 "Removido com sucesso!!!"
 
 /*funcoes que independem de modulo*/
-void desenhaMenu1();
-void desenhaMenu2(char[15]);
-
+    void desenhaMenu1();
+    void desenhaMenu2(char[15]);
+    
+#ifdef	__cplusplus
+}
 #endif
+
+#endif	/* FUNCTIONS_H */
+
