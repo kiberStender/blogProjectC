@@ -2,27 +2,30 @@
 #include "./header/clientefn.h"
 #include "./header/funcionariofn.h"
 
-typedef enum acao {DELETAR = 1, EDITAR, VER} Acao;
+typedef enum Acao {DELETAR = 1, EDITAR, VER} Acao;
 
-typedef enum modulo{CLIENTE = 1, FUNCIONARIO} Modulo;
+typedef enum Modulo{CLIENTE = 1, FUNCIONARIO} Modulo;
 
-void realizaAcaoSwitch(Modulo, Acao, int);
-void realizaAcao(int, Modulo, Acao);
-void switchOptions(int, Modulo);
+void realizaAcaoSwitch(DbCliente*, DbFuncionario*, Modulo, Acao, int);
+void realizaAcao(DbCliente*, DbFuncionario*,  Modulo, Acao);
+void switchOptions(DbCliente*, DbFuncionario*, Modulo);
 
-int main(int argc, char **argv){
+int main(int argc, char **argv){  
   int opMenu1;
   
+  DbCliente dbCli = construtorDbCliente();
+  DbFuncionario dbFun = construtorDbFuncionario();   
+    
   desenhaMenu1();
   scanf("%i", &opMenu1);
   
   do {    
     switch(opMenu1){
       case 1:
-        switchOptions(iteratorCli, CLIENTE);
+        switchOptions(&dbCli, &dbFun, CLIENTE);
         break;
       case 2:
-        switchOptions(iteratorCli, FUNCIONARIO);
+        switchOptions(&dbCli, &dbFun, FUNCIONARIO);
         break;
     }
     
@@ -32,58 +35,75 @@ int main(int argc, char **argv){
     }
   } while(opMenu1 != 3);
   
+  freeDbCliente(&dbCli);
+  freeDbFuncionario(&dbFun);
+  
   system(CLEAR);
   
   return 0;
 }
 
-void realizaAcaoSwitch(Modulo mod, Acao acao, int posicao){
+void realizaAcaoSwitch(DbCliente* dbCli, DbFuncionario* dbFun, Modulo mod, Acao acao, int posicao){
   switch(acao){
     case DELETAR:
       if(mod == CLIENTE){
-        deleteCliente(posicao);
+        deleteCliente(dbCli, posicao);
       } else {
-        deleteFuncionario(posicao);
+        deleteFuncionario(dbFun, posicao);
       }
       break;
     case EDITAR:
       if(mod == CLIENTE){
-        atualizaCliente(posicao);
+        atualizaCliente(dbCli, posicao);
       } else {
-        atualizaFuncionario(posicao);
+        atualizaFuncionario(dbFun, posicao);
       }
       break;
     case VER:
       if(mod == CLIENTE){
-        verCliente(posicao);
+        verCliente(dbCli, posicao);
       } else {
-        verFuncionario(posicao);
+        verFuncionario(dbFun, posicao);
       }
       break;
   }
 }
 
-void realizaAcao(int iterator, Modulo mod, Acao acao){
+void realizaAcao(DbCliente* dbCli, DbFuncionario* dbFun, Modulo mod, Acao acao){
   system(CLEAR);
   
-  if(iterator > 0){
-    char tempRg[20];
-    
-    printf("Digite o RG: ");
-    /*Guardando numa variavel temporaria*/
-    scanf("%s", tempRg);
-    
-    if(mod == FUNCIONARIO){      
-      realizaAcaoSwitch(mod, acao, buscaFuncionario(funcionarios, tempRg));
-    } else {
-      realizaAcaoSwitch(mod, acao, buscaCliente(clientes, tempRg));
-    }    
-  } else {
-    printf(MSG1);
+  switch(mod){
+    case CLIENTE:
+      if(temEspacoCliente(dbCli)){
+        char rg[13];
+        
+        printf("Digite o RG: ");
+        /*Guardando numa variavel temporaria*/
+        scanf("%s", rg);
+        
+        realizaAcaoSwitch(dbCli, dbFun, mod, acao, buscaCliente(dbCli, rg));
+      } else {
+        printf(MSG1);
+      }
+      break;
+    case FUNCIONARIO:
+      if(temEspacoFuncionario(dbFun)){
+        char rg[13];
+        
+        printf("Digite o RG: ");
+        /*Guardando numa variavel temporaria*/
+        scanf("%s", rg);
+        
+        realizaAcaoSwitch(dbCli, dbFun, mod, acao, buscaFuncionario(dbFun, rg));
+        
+      } else {
+        printf(MSG1);
+      }
+      break;
   }
 }
 
-void switchOptions(int iterator, Modulo modulo){
+void switchOptions(DbCliente* dbC, DbFuncionario* dbF, Modulo modulo){
   int opMenu;
   char mod[15];
   
@@ -100,19 +120,19 @@ void switchOptions(int iterator, Modulo modulo){
     switch(opMenu){
       case 1:
         if(modulo == CLIENTE){
-          cadastraCliente();
+          cadastraCliente(dbC);
         } else {
-          cadastraFuncionario();
+          cadastraFuncionario(dbF);
         }
         break;
       case 2:
-        realizaAcao(iterator, modulo, DELETAR);
+        realizaAcao(dbC, dbF, modulo, DELETAR);
         break;
       case 3:
-        realizaAcao(iterator, modulo, EDITAR);
+        realizaAcao(dbC, dbF, modulo, EDITAR);
         break;
       case 4:
-        realizaAcao(iterator, modulo, VER);
+        realizaAcao(dbC, dbF, modulo, VER);
         break;
     }
           
