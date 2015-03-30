@@ -1,31 +1,33 @@
 #include <stdio.h>
-#include "./header/clientefn.h"
-#include "./header/funcionariofn.h"
 
-typedef enum Acao {DELETAR = 1, EDITAR, VER} Acao;
+#include "header/ControladorCliente.h"
+#include "header/functions.h"
+#include "header/ControladorFuncionario.h"
 
-typedef enum Modulo{CLIENTE = 1, FUNCIONARIO} Modulo;
+typedef enum Modulo {CLIENTE, FUNCIONARIO} Modulo;
+typedef enum Acao {EDITAR, DELETAR, VER} Acao;
 
-void realizaAcaoSwitch(DbCliente*, DbFuncionario*, Modulo, Acao, int);
-void realizaAcao(DbCliente*, DbFuncionario*,  Modulo, Acao);
-void switchOptions(DbCliente*, DbFuncionario*, Modulo);
+void switchOptions(ControladorCliente*, ControladorFuncionario*, Modulo);
+void realizaAcao(ControladorCliente*, ControladorFuncionario*, Modulo, Acao);
+void realizaAcaoCliente(ControladorCliente**, Acao, Cliente*);
+void realizaAcaoFuncionario(ControladorFuncionario*, Acao, Funcionario*);
 
-int main(int argc, char **argv){  
+int main(){
+  ControladorCliente cCli = construtorControladorCliente();
+  ControladorFuncionario cFun = construtorControladorFuncionario();
   int opMenu1;
   
-  DbCliente dbCli = construtorDbCliente();
-  DbFuncionario dbFun = construtorDbFuncionario();   
-    
   desenhaMenu1();
   scanf("%i", &opMenu1);
   
-  do {    
+  do {
+    
     switch(opMenu1){
       case 1:
-        switchOptions(&dbCli, &dbFun, CLIENTE);
+        switchOptions(&cCli, &cFun, CLIENTE);        
         break;
       case 2:
-        switchOptions(&dbCli, &dbFun, FUNCIONARIO);
+        switchOptions(&cCli, &cFun, FUNCIONARIO);
         break;
     }
     
@@ -33,81 +35,22 @@ int main(int argc, char **argv){
       desenhaMenu1();
       scanf("%i", &opMenu1);
     }
-  } while(opMenu1 != 3);
+    
+  } while(opMenu1 != 3);  
   
-  freeDbCliente(&dbCli);
-  freeDbFuncionario(&dbFun);
+  freeControladorCliente(&cCli);
+  freeControladorFuncionario(&cFun);
   
   system(CLEAR);
   
   return 0;
 }
 
-void realizaAcaoSwitch(DbCliente* dbCli, DbFuncionario* dbFun, Modulo mod, Acao acao, int posicao){
-  switch(acao){
-    case DELETAR:
-      if(mod == CLIENTE){
-        deleteCliente(dbCli, posicao);
-      } else {
-        deleteFuncionario(dbFun, posicao);
-      }
-      break;
-    case EDITAR:
-      if(mod == CLIENTE){
-        atualizaCliente(dbCli, posicao);
-      } else {
-        atualizaFuncionario(dbFun, posicao);
-      }
-      break;
-    case VER:
-      if(mod == CLIENTE){
-        verCliente(dbCli, posicao);
-      } else {
-        verFuncionario(dbFun, posicao);
-      }
-      break;
-  }
-}
-
-void realizaAcao(DbCliente* dbCli, DbFuncionario* dbFun, Modulo mod, Acao acao){
-  system(CLEAR);
-  
-  switch(mod){
-    case CLIENTE:
-      if(temEspacoCliente(dbCli)){
-        char rg[13];
-        
-        printf("Digite o RG: ");
-        /*Guardando numa variavel temporaria*/
-        scanf("%s", rg);
-        
-        realizaAcaoSwitch(dbCli, dbFun, mod, acao, buscaCliente(dbCli, rg));
-      } else {
-        printf(MSG1);
-      }
-      break;
-    case FUNCIONARIO:
-      if(temEspacoFuncionario(dbFun)){
-        char rg[13];
-        
-        printf("Digite o RG: ");
-        /*Guardando numa variavel temporaria*/
-        scanf("%s", rg);
-        
-        realizaAcaoSwitch(dbCli, dbFun, mod, acao, buscaFuncionario(dbFun, rg));
-        
-      } else {
-        printf(MSG1);
-      }
-      break;
-  }
-}
-
-void switchOptions(DbCliente* dbC, DbFuncionario* dbF, Modulo modulo){
+void switchOptions(ControladorCliente* cCli, ControladorFuncionario* cFun, Modulo m) {
   int opMenu;
   char mod[15];
   
-  if(modulo == CLIENTE){
+  if(m == CLIENTE){
     strcpy(mod, "cliente");
   } else {
     strcpy(mod, "funcionario");
@@ -116,29 +59,82 @@ void switchOptions(DbCliente* dbC, DbFuncionario* dbF, Modulo modulo){
   desenhaMenu2(mod);
   scanf("%i", &opMenu);
   
-  do{
+  do {
     switch(opMenu){
       case 1:
-        if(modulo == CLIENTE){
-          cadastraCliente(dbC);
+        if(m == CLIENTE){
+          cadastraCliente(cCli);          
         } else {
-          cadastraFuncionario(dbF);
+          cadastraFuncionario(cFun);
         }
         break;
       case 2:
-        realizaAcao(dbC, dbF, modulo, DELETAR);
+        realizaAcao(cCli, cFun, m, DELETAR);
         break;
       case 3:
-        realizaAcao(dbC, dbF, modulo, EDITAR);
+        realizaAcao(cCli, cFun, m, EDITAR);
         break;
-      case 4:
-        realizaAcao(dbC, dbF, modulo, VER);
+      case 4:        
+        realizaAcao(cCli, cFun, m, VER);
         break;
     }
-          
+    
     if(opMenu != 5){
       desenhaMenu2(mod);
       scanf("%i", &opMenu);
-    }          
-  } while(opMenu != 5);
+    }
+    
+  } while(opMenu != 5); 
+}
+
+void realizaAcao(ControladorCliente* cCli, ControladorFuncionario* cFun, Modulo m, Acao a){
+  system(CLEAR);
+  char rg[13]; //PT na véia
+  
+  printf("Digite o RG: ");
+  scanf("%s", rg);
+  
+  switch(m){
+    case CLIENTE:
+      realizaAcaoCliente(&cCli, a, construtorCliente1(rg));
+      break;
+    case FUNCIONARIO:
+      realizaAcaoFuncionario(cFun, a, construtorFuncionario1(rg));
+      break;
+  }
+  
+}
+
+void realizaAcaoCliente(ControladorCliente** cCli, Acao a, Cliente* prc) {  
+  switch(a){
+    case DELETAR:
+      deleteCliente(*cCli, prc);
+      break;
+    case EDITAR:
+      atualizaCliente(*cCli, prc);
+      break;
+    case VER:
+      if((*cCli)->lista == NULL){
+        printf("NULL");
+      } else {
+        printf("not NULL");
+      }
+      
+      verCliente(*cCli, prc);
+      break;
+  }
+}
+
+void realizaAcaoFuncionario(ControladorFuncionario* cFun, Acao a, Funcionario* prc) {
+  switch(a){
+    case DELETAR:
+      deleteFuncionario(cFun, prc);
+      break;
+    case EDITAR:
+      atualizaFuncionario(cFun, prc);
+      break;
+    case VER:
+      verFuncionario(*cFun, prc);
+      break;
+  }
 }
