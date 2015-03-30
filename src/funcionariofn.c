@@ -1,6 +1,8 @@
-#include "../header/funcionariofn.h"
+#include "../header/data.h"
+#include "../header/endereco.h"
 #include "../header/funcionario.h"
 #include "../header/functions.h"
+#include "../header/funcionariofn.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -8,25 +10,12 @@
 #include <ctype.h>
 /*Lib para o toupper*/
 
-int iteratorFun = 0;
-
-/*Acoes com funcionario*/
-int buscaFuncionario(Funcionario funs[MAXREG], char rg[20]){
-  int i;
-
-  for(i = 0; i < MAXREG; i++){
-    if(strncmp(funs[i].rg, rg, 20) == 0){
-      return i;
-    }
-  }
-  return -1;
-}
-
-void cadastraFuncionario(){
+void cadastraFuncionario(DbFuncionario* db){
   system(CLEAR);
   
-  if(iteratorFun < MAXREG){
-    char nome[20], sobrenome[20], rg[20], cartTrab[20], dataNasc[15];       
+  if(db->iterator < MAXREG){
+    char nome[20], sobrenome[20], rg[20], cartTrab[20], dataNasc[15], cep[15], 
+            num[15], rua[25], bairro[25], cid[25], est[25], pais[25];       
     
     printf("Digite o nome do funcionario: ");
     scanf("%s", nome); /*Pegando o nome do sujeito*/
@@ -43,42 +32,73 @@ void cadastraFuncionario(){
     printf("Digite a data de nascimento do funcionario: ");
     scanf("%s", dataNasc); /*Pegando o datanasc do sujeito*/
     
-    funcionarios[iteratorFun] = FuncionarioConstrutor(nome, sobrenome, rg, cartTrab, dataNasc);
+    printf("Digite o Cep do funcionario: ");
+    scanf("%s", cep);
     
-    iteratorFun++;
+    printf("Digite o numero da casa do funcionario: ");
+    scanf("%s", num);
+    
+    printf("Digite a rua do funcionario: ");
+    scanf("%s", rua);
+    
+    printf("Digite o bairro do funcionario: ");
+    scanf("%s", bairro);
+    
+    printf("Digite cidade do funcionario: ");
+    scanf("%s", cid);
+    
+    printf("Digite o estado do funcionario: ");
+    scanf("%s", est);
+    
+    printf("Digite o pais do funcionario: ");
+    scanf("%s", pais);
+    
+    Data dt = construtorData(dataNasc);
+    Endereco end = construtorEndereco(cep, num, rua, bairro, cid, est, pais);
+    Funcionario * f = construtorFuncionario(nome, sobrenome, rg, cartTrab, dt, end);
+    
+    if(existeFuncionario(db, *f)){
+      printf("Funcionario ja existente!!!");
+    } else {
+      adicionarFuncionario(db, f);
+      
+      printf("Cadastrado com sucesso!!!");
+    }
   } else {
     printf(MSG);
   }
 }
 
-void deleteFuncionario(int posicao){
-  int j;
+void deleteFuncionario(DbFuncionario* db, int posicao){
+  int i;
       
-  /*Se soh apagarmos e deixamos por isso mesmo, uma hora nao teremos
-   * onde guardar, porque estaremos cheio de buracos no array
-   * Esse for retira o buraco feito pelo ato de apagar, deixando os
-   * espacos vazios para o fim do array
+  /**
+   * Primeiro dou free em Funcionario
+   * Depois copio o dados da próxima posição
+   * para a posição recem- apagada
+   * apenas se ela não for NULL
    */
-  for(j = posicao; j < MAXREG; j++){
-  
-    funcionarios[j] = funcionarios[j + 1];
+  for(i = posicao; i < MAXREG; i++){
+    removerFuncionario(db, posicao);
     
-    //funcionarios[j + 1] = NULL;
+    Funcionario* f = getDbFuncionarioFuncionario(db, i + 1);
+        
+    if(f != NULL){
+      setDbFuncionarioFuncionario(db, f, i);
+    }
   }
-   
-  iteratorFun--;
+      
+  printf(MSG3);
 }
 
-void atualizaFuncionario(int posicao){
-  char nome[20], sNome[20], rg[20], cartTrab[20], dtNasc[15];
+void atualizaFuncionario(DbFuncionario* db, int posicao){
+  char nome[20], sNome[20], rg[13], cartTrab[15], dtNasc[12], cep[15], 
+            num[15], rua[25], bairro[25], cid[25], est[25], pais[25];
+  
+  Funcionario* f = getDbFuncionarioFuncionario(db, posicao);
       
-  printf("Dados originais \n\n");
-  printf("Nome: %s \n", funcionarios[posicao].nome);/*Nome*/
-  printf("Sobrenome: %s \n", funcionarios[posicao].sobrenome);/*Sobrenome*/
-  printf("RG: %s \n", funcionarios[posicao].rg);/*RG*/
-  printf("Carteira de trabalho: %s \n", funcionarios[posicao].cartTrab);/*CartTrab*/
-  /*Data de nascimento*/
-  printf("Data de nascimento: %s \n", funcionarios[posicao].dataNasc);
+  printFuncionario(*f);
+  
   printf("\n\nPara manter o mesmo valor digite _ \n\n");
       
   printf("Digite um novo valor para o nome: ");
@@ -87,34 +107,71 @@ void atualizaFuncionario(int posicao){
   scanf("%s", sNome);
   printf("Digite um novo valor para o rg: ");
   scanf("%s", rg);
-  printf("Digite um novo valor para a carteira de trabalho: ");
+  printf("Digite um novo valor para a carteira de Trabalho: ");
   scanf("%s", cartTrab);
-  printf("Digite um novo valor para o data de nascimento: ");
+  printf("Digite um novo valor para a data de nascimento: ");
   scanf("%s", dtNasc);
-      
+  printf("Digite um novo valor para o cep: ");
+  scanf("%s", cep);
+  printf("Digite um novo valor para o numero dac casa: ");
+  scanf("%s", num);
+  printf("Digite um novo valor para rua: ");
+  scanf("%s", rua);
+  printf("Digite um novo valor para o bairro: ");
+  scanf("%s", bairro);
+  printf("Digite um novo valor para a cidade: ");
+  scanf("%s", cid);
+  printf("Digite um novo valor para o estado: ");
+  scanf("%s", est);
+  printf("Digite um novo valor para o pais: ");
+  scanf("%s", pais);
+  
+  Endereco end = f->end;
+
   if(strncmp(nome, "_", 1) != 0){
-    strcpy(funcionarios[posicao].nome, nome);
+    setFuncionarioNome(f, nome);
   }
   if(strncmp(sNome, "_", 1) != 0){
-    strcpy(funcionarios[posicao].sobrenome, sNome);
+    setFuncionarioSobrenome(f, sNome);
   }
   if(strncmp(rg, "_", 1) != 0){
-    strcpy(funcionarios[posicao].rg, rg);
+    setFuncionarioRG(f, rg);
   }
   if(strncmp(cartTrab, "_", 1) != 0){
-    strcpy(funcionarios[posicao].cartTrab, cartTrab);
+    setFuncionarioCartTrab(f, cartTrab);
   }
-  if(strncmp(dtNasc, "_", 1) != 0){
-    strcpy(funcionarios[posicao].dataNasc, dtNasc);
+  if(strncmp(dtNasc, "_", 1) != 0) {
+    setFuncionarioDataNasc(f, construtorData(dtNasc));
   }
+  if(strncmp(cep, "_", 1) != 0)  {
+    setEnderecoCep(&end, cep);
+  }
+  if(strncmp(num, "_", 1) != 0)  {
+    setEnderecoNum(&end, num);
+  }  
+  if(strncmp(rua, "_", 1) != 0)  {
+    setEnderecoRua(&end, rua);
+  }
+  if(strncmp(bairro, "_", 1) != 0)  {
+    setEnderecoBairro(&end, bairro);
+  }
+  if(strncmp(cid, "_", 1) != 0)  {
+    setEnderecoCidade(&end, cid);
+  }
+  if(strncmp(est, "_", 1) != 0)  {
+    setEnderecoEstado(&end, est);
+  }
+  if(strncmp(pais, "_", 1) != 0)  {
+    setEnderecoPais(&end, pais);
+  }
+  
+  setFuncionarioEnd(f, end);
+  setDbFuncionarioFuncionario(db, f, posicao);
 }
 
-void verFuncionario(int posicao){
-  printf("Nome: %s \n", funcionarios[posicao].nome);/*Nome*/
-  printf("Sobrenome: %s \n", funcionarios[posicao].sobrenome);/*Sobrenome*/
-  printf("RG: %s \n", funcionarios[posicao].rg);/*RG*/
-  printf("CPF: %s \n", funcionarios[posicao].cartTrab);/*CPF*/
-  /*Data de nascimento*/
-  printf("Data de nascimento: %s \n", funcionarios[posicao].dataNasc);
+void verFuncionario(DbFuncionario *db, int posicao){
+  
+  printFuncionario(*getDbFuncionarioFuncionario(db, posicao));
+  
   system(PAUSE);
 }

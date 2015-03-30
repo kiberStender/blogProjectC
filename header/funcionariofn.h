@@ -7,21 +7,16 @@
 /*Lib nova para adicionar algumas funcionalidades legais*/
 #include <ctype.h>
 /*Lib para o toupper*/
+#include "data.h"
+#include "endereco.h"
 #include "funcionario.h"
 #include "functions.h"
-
-/*Variaveis de funcionario*/
-Funcionario funcionarios[MAXREG];
-/*A cada registro adicionado, iterator aumenta seu valor em 1
- * e a cada registro removido, diminui seu valor em 1
- */
-int iteratorFun;
+#include "DbFuncionario.h"
 
 /*Acoes com funcionario*/
-int buscaFuncionario(Funcionario[MAXREG], char[20]);
-void cadastraFuncionario();
-void deleteFuncionario(int);
-void atualizaFuncionario(int);
-void verFuncionario(int);
+void cadastraFuncionario(DbFuncionario*);
+void deleteFuncionario(DbFuncionario*, int);
+void atualizaFuncionario(DbFuncionario*, int);
+void verFuncionario(DbFuncionario*, int);
 
 #endif
