@@ -2,48 +2,42 @@
  * File:   DbCliente.h
  * Author: sirkleber
  *
- * Created on February 14, 2015, 7:11 PM
+ * Created on March 6, 2015, 7:39 AM
  */
 
 #ifndef DBCLIENTE_H
 #define	DBCLIENTE_H
 
+#include <stdlib.h>
+#include <stdio.h>
+#include "Cliente.h"
+
+
 #ifdef	__cplusplus
 extern "C" {
 #endif
-
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-/*Lib nova para adicionar algumas funcionalidades legais*/
-#include <ctype.h>
-#include "cliente.h"
-#include "functions.h"
     
-typedef struct DbCliente {
-  Cliente* db[MAXREG];
-  int iterator;
-} DbCliente;
-
-DbCliente construtorDbCliente();
-
-void adicionarCliente(DbCliente*, Cliente*);
-
-void removerCliente(DbCliente*, int);
-
-void setDbClienteCliente(DbCliente*, Cliente*, int);
-
-Cliente* getDbClienteCliente(DbCliente*, int);
-
-int buscaCliente(DbCliente* db, char rg[]);
-
-int existeCliente(DbCliente* db, Cliente c);
-
-int estaCheioCliente(DbCliente*);
-
-int temEspacoCliente(DbCliente*);
-
-void freeDbCliente(DbCliente*);
+    typedef struct DbCliente {
+        Cliente* cliente;
+        struct DbCliente* prox;
+    } DbCliente;
+    
+    DbCliente* construtorDbCliente();
+    DbCliente* construtorDbCliente1(DbCliente*, Cliente*);
+    void freeDbCliente(DbCliente**);
+    
+    int tamanhoDbCliente(DbCliente*);
+    
+    DbCliente* consCliente(DbCliente*, Cliente*);
+    void adicionarCliente(DbCliente**, Cliente*);
+    
+    void removerCliente(DbCliente**, Cliente*);
+    
+    void setDbClienteCliente(DbCliente**, Cliente*, Cliente*);
+    
+    Cliente* getDbClienteCliente(DbCliente*, Cliente*);
+    
+    int existeCliente(DbCliente*, Cliente*);
 
 #ifdef	__cplusplus
 }

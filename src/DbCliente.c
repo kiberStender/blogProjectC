@@ -1,92 +1,118 @@
-#include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
-/*Lib nova para adicionar algumas funcionalidades legais*/
-#include <ctype.h>
-#include "../header/cliente.h"
+#include <stdio.h>
+
+#include "../header/Cliente.h"
 #include "../header/DbCliente.h"
-#include "../header/functions.h"
 
-DbCliente construtorDbCliente(){
-  DbCliente db;
-  int i;
+DbCliente* construtorDbCliente(){
+  return NULL;
+}
+
+DbCliente* construtorDbCliente1(DbCliente* tail, Cliente* head){
+  DbCliente* novo = calloc(1, sizeof(DbCliente));
   
-  for(i = 0; i < MAXREG; i++){
-    db.db[i] = NULL;
-  }
-
-  db.iterator = 0;
-
-  return db;
-}
-
-void adicionarCliente(DbCliente* db, Cliente* c){
-  db->db[db->iterator] = c;
-  db->iterator++;
-}
-
-void removerCliente(DbCliente* db, int pos){
-  freeCliente(db->db[pos]);
-  db->db[pos] = NULL;
-  db->iterator--;
-}
-
-void setDbClienteCliente(DbCliente* db, Cliente* c, int pos){
-  Cliente* c0 = db->db[pos];
-  db->db[pos] = construtorCliente(
-    c->nome, c->sobrenome, c->rg, c->cpf, c->dataNasc, c->end
-  );
+  novo->cliente = head;
+  novo->prox = tail;
   
-  if(c0 != db->db[pos]){
-    freeCliente(c0);
-  }
-  c0 = NULL;
+  return novo;
 }
 
-Cliente* getDbClienteCliente(DbCliente* db, int pos){  
-  return db->db[pos];
-}
-
-int buscaCliente(DbCliente* db, char rg[]){
-  int i;
-  
-  for(i = 0; i < MAXREG; i++){
-    Cliente* c = getDbClienteCliente(db, i);
+void freeDbCliente(DbCliente** db){
+  if(*db != NULL){
+    Cliente* del = (*db)->cliente;
+    DbCliente* prox = (*db)->prox;
     
-    if(strncmp(c->rg, rg, strlen(c->rg)) == 0){
-      return i;
+    freeCliente(&del);
+    db = NULL;
+    
+    freeDbCliente(&prox);    
+  }
+}
+
+int tamanhoDbCliente(DbCliente* db){
+  if(db == NULL){
+    return 0;
+  } else {
+    return 1 + tamanhoDbCliente(db->prox);
+  }
+}
+
+DbCliente* consCliente(DbCliente* db, Cliente* c){
+  if(db == NULL){
+    return construtorDbCliente1(db, c);
+  } else {
+    Cliente* head = db->cliente;
+    DbCliente* calda = db->prox;
+    int cmp = clienteCmp(head, c);
+    
+    if(cmp < 0){
+      return construtorDbCliente1(consCliente(calda, c), head);
+    } else if(cmp == 0) {
+      if(equalsCliente(head, c)){
+        return db;
+      } else {
+        return consCliente(calda, c);
+      }
+    } else {
+      return construtorDbCliente1(construtorDbCliente1(calda, head), c);
     }
   }
-  return -1;
 }
 
-int existeCliente(DbCliente* db, Cliente c){
-  int i;
+void adicionarCliente(DbCliente** db, Cliente* c){
+  *db = consCliente(*db, c);
+}
 
-  for(i = 0; i < MAXREG; i++){
-    Cliente* c1 = getDbClienteCliente(db, i);
+void removerCliente(DbCliente** db, Cliente* c){
+  if(*db != NULL){
+    DbCliente* atual = *db;
+    DbCliente* aux = NULL;
+    Cliente* del = NULL;
     
-    if(c1 != NULL){
-      return equalsCliente(*c1, c);
+    while(atual != NULL){
+      if(!equalsCliente(aux->cliente, c)){
+        aux = consCliente(aux, aux->cliente);
+      } else {
+        del = aux->cliente;
+      }
+    }
+    
+    atual = atual->prox;
+    freeCliente(&del);
+    del = NULL;
+  }
+}
+
+void setDbClienteCliente(DbCliente** db, Cliente* prc, Cliente* novo) {
+  if(*db != NULL){
+    if(equalsCliente((*db)->cliente, prc)){
+      (*db)->cliente = construtorCliente2(novo);
+    } else {
+      setDbClienteCliente(&(*db)->prox, prc, novo);
     }
   }
-  return 0;
 }
 
-int estaCheioCliente(DbCliente* db){
-  return db->iterator >= MAXREG;
-  //igual if(db->iterator >= MAXREG){ return 1;} else {return 0;}
+Cliente* getDbClienteCliente(DbCliente* db, Cliente* prc){
+  if(db == NULL){
+    return NULL;
+  } else {
+    if(equalsCliente(db->cliente, prc)){
+      return db->cliente;
+    } else {
+      return getDbClienteCliente(db->prox, prc);
+    }
+  }
 }
 
-int temEspacoCliente(DbCliente* db){
-  return db->iterator > 0;
-  //igual if(db->iterator > 0){ return 1;} else {return 0;}
-}
-
-void freeDbCliente(DbCliente* db){
-  int i;
-  
-  for(i = 0; i > MAXREG; i++){
-    removerCliente(db, i);
+int existeCliente(DbCliente* db, Cliente* prc){
+  if(db == NULL){
+    return 0;
+  } else {
+    if(equalsCliente(db->cliente, prc)){
+      return 1;
+    } else {
+      return existeCliente(db, prc);
+    }
   }
 }

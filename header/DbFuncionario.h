@@ -2,52 +2,49 @@
  * File:   DbFuncionario.h
  * Author: sirkleber
  *
- * Created on February 16, 2015, 11:34 AM
+ * Created on March 6, 2015, 2:37 PM
  */
 
 #ifndef DBFUNCIONARIO_H
 #define	DBFUNCIONARIO_H
 
+#include <stdlib.h>
+
+#include "Funcionario.h"
+
+
 #ifdef	__cplusplus
 extern "C" {
 #endif
+
+    typedef struct DbFuncionario {
+        Funcionario* funcionario;
+        struct DbFuncionario* prox;
+    } DbFuncionario;
     
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-/*Lib nova para adicionar algumas funcionalidades legais*/
-#include <ctype.h>
-#include "funcionario.h"
-#include "functions.h"
-
-typedef struct DbFuncionario {
-  Funcionario* db[MAXREG];
-  int iterator;
-} DbFuncionario;
-
-DbFuncionario construtorDbFuncionario();
-
-void adicionarFuncionario(DbFuncionario*, Funcionario*);
-
-void removerFuncionario(DbFuncionario*, int);
-
-void setDbFuncionarioFuncionario(DbFuncionario*, Funcionario*, int);
-
-Funcionario* getDbFuncionarioFuncionario(DbFuncionario*, int);
-
-int buscaFuncionario(DbFuncionario* db, char rg[]);
-
-int existeFuncionario(DbFuncionario*, Funcionario);
-
-int estaCheioFuncionario(DbFuncionario*);
-
-int temEspacoFuncionario(DbFuncionario*);
-
-void freeDbFuncionario(DbFuncionario*);
+    DbFuncionario* construtorDbFuncionario();
+    DbFuncionario* construtorDbFuncionario1(DbFuncionario*, Funcionario*);
+    void freeDbFuncionario(DbFuncionario**);
+    
+    int tamanhoDbFuncionario(DbFuncionario*);
+    
+    DbFuncionario* consFuncionario(DbFuncionario*, Funcionario*);
+    void adicionarFuncionario(DbFuncionario**, Funcionario*);
+    
+    void removerFuncionario(DbFuncionario**, Funcionario*);
+    
+    DbFuncionario** splitDbFR(int, DbFuncionario*, DbFuncionario*);
+    
+    DbFuncionario** splitDbF(DbFuncionario*, int);
+    
+    void setDbFuncionarioFuncionario(DbFuncionario**, Funcionario*, Funcionario*);
+    
+    Funcionario* getDbFuncionarioFuncionario(DbFuncionario*, Funcionario*);
+    
+    int existeFuncionario(DbFuncionario*, Funcionario*);
 
 #ifdef	__cplusplus
 }
 #endif
 
 #endif	/* DBFUNCIONARIO_H */
-
