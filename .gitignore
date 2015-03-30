@@ -3,7 +3,7 @@ obj/
 lib/
 
 #Para ignorar nossos arquivos banco de dados
-*.dat
+*.bin
 
 #Qualquer arquivo .exe
 *.exe
