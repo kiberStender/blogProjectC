@@ -7,22 +7,16 @@
 /*Lib nova para adicionar algumas funcionalidades legais*/
 #include <ctype.h>
 /*Lib para o toupper*/
+#include "data.h"
+#include "endereco.h"
 #include "cliente.h"
 #include "functions.h"
-
-/*Variaveis de cliente*/
-Cliente clientes[MAXREG];
-/*A cada registro adicionado, iterator aumenta seu valor em 1
- * e a cada registro removido, diminui seu valor em 1
- */
-int iteratorCli;
+#include "DbCliente.h"
 
 /*Acoes com cliente*/
-int buscaCliente(Cliente[MAXREG], char[20]);
-int existeCliente(Cliente[MAXREG], Cliente);
-void cadastraCliente();
-void deleteCliente(int);
-void atualizaCliente(int);
-void verCliente(int);
+void cadastraCliente(DbCliente*);
+void deleteCliente(DbCliente*, int);
+void atualizaCliente(DbCliente*, int);
+void verCliente(DbCliente*, int);
 
 #endif

@@ -1,5 +1,7 @@
-#include "../header/clientefn.h"
+#include "../header/endereco.h"
+#include "../header/data.h"
 #include "../header/cliente.h"
+#include "../header/clientefn.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -7,36 +9,14 @@
 #include <ctype.h>
 /*Lib para o toupper*/
 
-int iteratorCli = 0;
-
 /*Acoes com cliente*/
-int buscaCliente(Cliente clis[MAXREG], char rg[20]){
-  int i;
 
-  for(i = 0; i < MAXREG; i++){
-    if(strncmp(clis[i].rg, rg, 20) == 0){
-      return i;
-    }
-  }
-  return -1;
-}
-
-int existeCliente(Cliente clis[MAXREG], Cliente c){
-  int i;
-
-  for(i = 0; i < MAXREG; i++){
-    if(equalsCliente(clis[i], c)){
-      return i;
-    }
-  }
-  return -1;
-}
-
-void cadastraCliente(){
+void cadastraCliente(DbCliente* db){
   system(CLEAR);
   
-  if(iteratorCli < MAXREG){
-    char nome[20], sobrenome[20], rg[20], cpf[20], dataNasc[15];
+  if(!estaCheioCliente(db)){
+    char nome[20], sobrenome[20], rg[13], cpf[15], dataNasc[12], cep[15], 
+            num[15], rua[25], bairro[25], cid[25], est[25], pais[25];
   
     printf("Digite o nome do cliente: ");
     scanf("%s", nome); /*Pegando o nome do sujeito*/
@@ -53,15 +33,38 @@ void cadastraCliente(){
     printf("Digite a data de nascimento do cliente: ");
     scanf("%s", dataNasc); /*Pegando o datanasc do sujeito*/
     
-    Cliente c = ClienteConstrutor(nome, sobrenome, rg, cpf, dataNasc);
+    printf("Digite o Cep do cliente: ");
+    scanf("%s", cep);
     
-    if(existeCliente(clientes, c) > -1){
-      printf("Cliente já existente");
+    printf("Digite o numero da casa do cliente: ");
+    scanf("%s", num);
+    
+    printf("Digite a rua do cliente: ");
+    scanf("%s", rua);
+    
+    printf("Digite o bairro do cliente: ");
+    scanf("%s", bairro);
+    
+    printf("Digite cidade do cliente: ");
+    scanf("%s", cid);
+    
+    printf("Digite o estado do cliente: ");
+    scanf("%s", est);
+    
+    printf("Digite o pais do cliente: ");
+    scanf("%s", pais);
+    
+    Data dt = construtorData(dataNasc);
+    Endereco end = construtorEndereco(cep, num, rua, bairro, cid, est, pais);
+    
+    Cliente *c = construtorCliente(nome, sobrenome, rg, cpf, dt, end);
+    
+    if(existeCliente(db, *c)){
+      printf("Cliente já existente!!!");
     } else {
-      clientes[iteratorCli] = c;
-
-      iteratorCli = iteratorCli + 1;
-      /*iteratorCli++; se preferir*/
+      adicionarCliente(db, c);
+      
+      printf("Cadastrado com sucesso!!!");
     }
 
   } else {
@@ -69,35 +72,33 @@ void cadastraCliente(){
   }
 }
 
-void deleteCliente(int posicao){
-  int j;
+void deleteCliente(DbCliente* db, int posicao){
+  int i;
       
-  /*Se soh apagarmos e deixamos por isso mesmo, uma hora nao teremos
-   * onde guardar, porque estaremos cheio de buracos no array
-   * Esse for retira o buraco feito pelo ato de apagar, deixando os
-   * espacos vazios para o fim do array
+  /**
+   * Primeiro dou free em Cliente
+   * Depois copio o dados da próxima posição
+   * para a posição recem- apagada
+   * apenas se ela não for NULL
    */
-  for(j = posicao; j < MAXREG; j++){
+  for(i = posicao; i < MAXREG; i++){
+    removerCliente(db, i);
     
-    clientes[j] = clientes[j + 1];
-    //clientes[j + 1] = NULL;
+    Cliente* c = getDbClienteCliente(db, i + 1);
+    
+    if(c != NULL){
+      setDbClienteCliente(db, c, i);
+    }
   }
-      
   printf(MSG3);
-  iteratorCli = iteratorCli - 1;
-  /*iteratorCli--; se preferir*/
 }
 
-void atualizaCliente(int posicao){
-  char nome[20], sNome[20], rg[20], cpf[20], dtNasc[15];
+void atualizaCliente(DbCliente* db, int posicao){
+  char nome[20], sNome[20], rg[13], cpf[15], dtNasc[12], cep[15], 
+            num[15], rua[25], bairro[25], cid[25], est[25], pais[25];
   
   printf("Dados originais \n\n");
-  printf("Nome: %s \n", clientes[posicao].nome);/*Nome*/
-  printf("Sobrenome: %s \n", clientes[posicao].sobrenome);/*Sobrenome*/
-  printf("RG: %s \n", clientes[posicao].rg);/*RG*/
-  printf("CPF: %s \n", clientes[posicao].cpf);/*CPF*/
-  /*Data de nascimento*/
-  printf("Data de nascimento: %s \n", clientes[posicao].dataNasc);
+  printCliente(*getDbClienteCliente(db, posicao));
       
   printf("\n\nPara manter o mesmo valor digite _ \n\n");
       
@@ -109,32 +110,70 @@ void atualizaCliente(int posicao){
   scanf("%s", rg);
   printf("Digite um novo valor para o cpf: ");
   scanf("%s", cpf);
-  printf("Digite um novo valor para o data de nascimento: ");
+  printf("Digite um novo valor para a data de nascimento: ");
   scanf("%s", dtNasc);
+  printf("Digite um novo valor para o cep: ");
+  scanf("%s", cep);
+  printf("Digite um novo valor para o numero dac casa: ");
+  scanf("%s", num);
+  printf("Digite um novo valor para rua: ");
+  scanf("%s", rua);
+  printf("Digite um novo valor para o bairro: ");
+  scanf("%s", bairro);
+  printf("Digite um novo valor para a cidade: ");
+  scanf("%s", cid);
+  printf("Digite um novo valor para o estado: ");
+  scanf("%s", est);
+  printf("Digite um novo valor para o pais: ");
+  scanf("%s", pais);
+  
+  Cliente* c = db->db[posicao];
+  Endereco end = c->end;
 
   if(strncmp(nome, "_", 1) != 0){
-    strcpy(clientes[posicao].nome, nome);
+    setClienteNome(c, nome);
   }
   if(strncmp(sNome, "_", 1) != 0){
-    strcpy(clientes[posicao].sobrenome, sNome);
+    setClienteSobrenome(c, sNome);
   }
   if(strncmp(rg, "_", 1) != 0){
-    strcpy(clientes[posicao].rg, rg);
+    setClienteRG(c, rg);
   }
   if(strncmp(cpf, "_", 1) != 0){
-    strcpy(clientes[posicao].cpf, cpf);
+    setClienteCpf(c, cpf);
   }
   if(strncmp(dtNasc, "_", 1) != 0){
-    strcpy(clientes[posicao].dataNasc, dtNasc);
+    setClienteDataNasc(c, construtorData(dtNasc));
   }
+  if(strncmp(cep, "_", 1) != 0)  {
+    setEnderecoCep(&end, cep);
+  }
+  if(strncmp(num, "_", 1) != 0)  {
+    setEnderecoNum(&end, num);
+  }  
+  if(strncmp(rua, "_", 1) != 0)  {
+    setEnderecoRua(&end, rua);
+  }
+  if(strncmp(bairro, "_", 1) != 0)  {
+    setEnderecoBairro(&end, bairro);
+  }
+  if(strncmp(cid, "_", 1) != 0)  {
+    setEnderecoCidade(&end, cid);
+  }
+  if(strncmp(est, "_", 1) != 0)  {
+    setEnderecoEstado(&end, est);
+  }
+  if(strncmp(pais, "_", 1) != 0)  {
+    setEnderecoPais(&end, pais);
+  }
+  
+  setClienteEnd(c, end);
+  setDbClienteCliente(db, c, posicao);
 }
 
-void verCliente(int posicao){
-  printf("Nome: %s \n", clientes[posicao].nome);/*Nome*/
-  printf("Sobrenome: %s \n", clientes[posicao].sobrenome);/*Sobrenome*/
-  printf("RG: %s \n", clientes[posicao].rg);/*RG*/
-  printf("CPF: %s \n", clientes[posicao].cpf);/*CPF*/
-  /*Data de nascimento*/
-  printf("Data de nascimento: %s \n", clientes[posicao].dataNasc);
+void verCliente(DbCliente* db, int posicao){
+  printCliente(*getDbClienteCliente(db, posicao));
   system(PAUSE);
 }
+
+
