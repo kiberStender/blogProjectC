@@ -2,8 +2,11 @@
 obj/
 lib/
 
-*.dat #Para ignorar nossos arquivos banco de dados
+#Para ignorar nossos arquivos banco de dados
+*.dat
 
-*.exe #Qualquer arquivo .exe
+#Qualquer arquivo .exe
+*.exe
+
 #para ignorar o executáel no Linux
 program
