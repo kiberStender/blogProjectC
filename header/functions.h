@@ -1,3 +1,6 @@
+#ifndef FUNCTIONS_H
+#define FUNCTIONS_H
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -25,3 +28,5 @@
 /*funcoes que independem de modulo*/
 void desenhaMenu1();
 void desenhaMenu2(char[15]);
+
+#endif
