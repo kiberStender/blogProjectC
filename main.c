@@ -20,8 +20,7 @@ int main(){
   desenhaMenu1();
   scanf("%i", &opMenu1);
   
-  do {
-    
+  do {    
     switch(opMenu1){
       case 1:
         switchOptions(&cCli, &cFun, CLIENTE);        

@@ -66,14 +66,16 @@ void adicionarFuncionario(DbFuncionario** db, Funcionario* c){
   *db = consFuncionario(*db, c);
 }
 
-void removerFuncionario(DbFuncionario** db, Funcionario* c){
+void removerFuncionario(DbFuncionario** db, Funcionario* prc){
   if(*db != NULL){
     DbFuncionario* atual = *db;
     DbFuncionario* aux = NULL;
     Funcionario* del = NULL;
     
     while(atual != NULL){
-      if(!equalsFuncionario(aux->funcionario, c)){
+      Funcionario* f = aux->funcionario;
+      
+      if(strncmp(f->rg, prc->rg, strlen(f->rg)) != 0){
         aux = consFuncionario(aux, aux->funcionario);
       } else {
         del = aux->funcionario;
@@ -86,42 +88,14 @@ void removerFuncionario(DbFuncionario** db, Funcionario* c){
   }
 }
 
-DbFuncionario** splitDbFR(int curN, DbFuncionario* curL, DbFuncionario* pre){  
-  DbFuncionario** tupla = calloc(2, sizeof(DbFuncionario));
-  
-  if(curL == NULL){
-    tupla[0] = pre;
-    tupla[1] = NULL;
-    return tupla;
-  } else {
-    if(curN == 0){
-      tupla[0] = pre;
-      tupla[1] = curL;
-      
-      return tupla;
-    } else {
-      return splitDbFR(curN - 1, curL->prox, consFuncionario(pre, curL->funcionario));
-    }
-  }
-}
-
-DbFuncionario** splitDbF(DbFuncionario* db, int n){
-  return splitDbFR(n, db, NULL);
-}
-
 void setDbFuncionarioFuncionario(DbFuncionario** db, Funcionario* prc, Funcionario* novo) {
   if(*db != NULL){
-    DbFuncionario** tupla = splitDbF(*db, tamanhoDbFuncionario(*db) / 2);
-    int cmp = funcionarioCmp(prc, tupla[1]->funcionario);
-
-    if(cmp >= 0){
-      if(equalsFuncionario(tupla[1]->funcionario, prc)){
-        tupla[1]->funcionario = construtorFuncionario2(novo);
-      } else {
-        setDbFuncionarioFuncionario(&tupla[1], prc, novo);
-      }
+    Funcionario* f = (*db)->funcionario;
+    
+    if(strncmp(f->rg, prc->rg, strlen(f->rg)) == 0){
+      (*db)->funcionario = construtorFuncionario2(novo);
     } else {
-      setDbFuncionarioFuncionario(&tupla[0], prc, novo);
+      setDbFuncionarioFuncionario(&(*db)->prox, prc, novo);
     }
   }
 }
@@ -130,17 +104,12 @@ Funcionario* getDbFuncionarioFuncionario(DbFuncionario* db, Funcionario* prc){
   if(db == NULL){
     return NULL;
   } else {
-    DbFuncionario** tupla = splitDbF(db, tamanhoDbFuncionario(db) / 2);
-    int cmp = funcionarioCmp(prc, tupla[1]->funcionario);
-
-    if(cmp >= 0){
-      if(equalsFuncionario(tupla[1]->funcionario, prc)){
-        return tupla[1]->funcionario;
-      } else {
-        return getDbFuncionarioFuncionario(tupla[1], prc);
-      }
+    Funcionario* f = db->funcionario;
+    
+    if(strncmp(f->rg, prc->rg, strlen(f->rg)) == 0){
+      return f;
     } else {
-      return getDbFuncionarioFuncionario(tupla[0], prc);
+      return getDbFuncionarioFuncionario(db->prox, prc);
     }
   }
 }
@@ -149,17 +118,12 @@ int existeFuncionario(DbFuncionario* db, Funcionario* prc){
   if(db == NULL){
     return 0;
   } else {
-    DbFuncionario** tupla = splitDbF(db, tamanhoDbFuncionario(db) / 2);
-    int cmp = funcionarioCmp(prc, tupla[1]->funcionario);
-
-    if(cmp >= 0){
-      if(equalsFuncionario(tupla[1]->funcionario, prc)){
-        return 1;
-      } else {
-        return existeFuncionario(tupla[1], prc);
-      }
+    Funcionario* f = db->funcionario;
+    
+    if(strncmp(f->rg, prc->rg, strlen(f->rg)) == 0){
+      return 1;
     } else {
-      return existeFuncionario(tupla[0], prc);
+      return existeFuncionario(db->prox, prc);
     }
   }
 }

@@ -63,14 +63,16 @@ void adicionarCliente(DbCliente** db, Cliente* c){
   *db = consCliente(*db, c);
 }
 
-void removerCliente(DbCliente** db, Cliente* c){
+void removerCliente(DbCliente** db, Cliente* prc){
   if(*db != NULL){
     DbCliente* atual = *db;
     DbCliente* aux = NULL;
     Cliente* del = NULL;
     
     while(atual != NULL){
-      if(!equalsCliente(aux->cliente, c)){
+      Cliente* c = aux->cliente;
+      
+      if(strncmp(c->rg, prc->rg, strlen(c->rg)) != 0){
         aux = consCliente(aux, aux->cliente);
       } else {
         del = aux->cliente;
@@ -85,7 +87,9 @@ void removerCliente(DbCliente** db, Cliente* c){
 
 void setDbClienteCliente(DbCliente** db, Cliente* prc, Cliente* novo) {
   if(*db != NULL){
-    if(equalsCliente((*db)->cliente, prc)){
+    Cliente* c = (*db)->cliente;
+    
+    if(strncmp(c->rg, prc->rg, strlen(c->rg)) == 0){
       (*db)->cliente = construtorCliente2(novo);
     } else {
       setDbClienteCliente(&(*db)->prox, prc, novo);
@@ -97,8 +101,10 @@ Cliente* getDbClienteCliente(DbCliente* db, Cliente* prc){
   if(db == NULL){
     return NULL;
   } else {
-    if(equalsCliente(db->cliente, prc)){
-      return db->cliente;
+    Cliente* c = db->cliente;
+    
+    if(strncmp(c->rg, prc->rg, strlen(c->rg)) == 0){
+      return c;
     } else {
       return getDbClienteCliente(db->prox, prc);
     }
@@ -109,10 +115,12 @@ int existeCliente(DbCliente* db, Cliente* prc){
   if(db == NULL){
     return 0;
   } else {
-    if(equalsCliente(db->cliente, prc)){
+    Cliente* c = db->cliente;
+    
+    if(strncmp(c->rg, prc->rg, strlen(c->rg)) == 0){
       return 1;
     } else {
-      return existeCliente(db, prc);
+      return existeCliente(db->prox, prc);
     }
   }
 }

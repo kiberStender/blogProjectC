@@ -19,7 +19,7 @@ void freeControladorCliente(ControladorCliente* cc){
 void cadastraCliente(ControladorCliente* cc){
   system(CLEAR);
   
-  /*char nome[20], sobrenome[20], rg[13], cpf[15], dataNasc[12], cep[15], 
+  char nome[20], sobrenome[20], rg[13], cpf[15], dataNasc[12], cep[15], 
     num[15], rua[25], bairro[25], cid[25], est[25], pais[25];
   
   printf("Digite o nome do cliente: ");
@@ -30,7 +30,7 @@ void cadastraCliente(ControladorCliente* cc){
    
   printf("Digite o RG do cliente: ");
   scanf("%s", rg); //Pegando o rg do sujeito
-  /
+  
   printf("Digite o CPF do cliente: ");
   scanf("%s", cpf); //Pegando o cpf do sujeito
      
@@ -61,12 +61,12 @@ void cadastraCliente(ControladorCliente* cc){
   Data* dt = construtorData(dataNasc);
   Endereco* end = construtorEndereco(cep, num, rua, bairro, cid, est, pais);
     
-  Cliente *c = construtorCliente(nome, sobrenome, rg, cpf, dt, end);*/
+  Cliente *c = construtorCliente(nome, sobrenome, rg, cpf, dt, end);
   
-  Data* dt = construtorData("20/09/1989");
+  /*Data* dt = construtorData("20/09/1989");
   Endereco* end = construtorEndereco("3698", "32", "bloa", "bair", "ga", "pes", "br");
     
-  Cliente *c = construtorCliente("Kleber", "stender", "366", "989", dt, end);
+  Cliente *c = construtorCliente("Kleber", "stender", "366", "989", dt, end);*/
     
   if(existeCliente(cc->lista, c)){
     printf("Cliente já existente!!!");

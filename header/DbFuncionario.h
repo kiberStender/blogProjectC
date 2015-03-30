@@ -33,10 +33,6 @@ extern "C" {
     
     void removerFuncionario(DbFuncionario**, Funcionario*);
     
-    DbFuncionario** splitDbFR(int, DbFuncionario*, DbFuncionario*);
-    
-    DbFuncionario** splitDbF(DbFuncionario*, int);
-    
     void setDbFuncionarioFuncionario(DbFuncionario**, Funcionario*, Funcionario*);
     
     Funcionario* getDbFuncionarioFuncionario(DbFuncionario*, Funcionario*);
