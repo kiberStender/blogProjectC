@@ -10,3 +10,9 @@ lib/
 
 #para ignorar o executáel no Linux
 program
+
+#para ignorar nosso banco.db
+*.db
+
+#para ignora coisas do netbeans
+nbproject/
